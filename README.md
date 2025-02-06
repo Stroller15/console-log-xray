@@ -1,6 +1,9 @@
 # Console Log X-Ray  
 
-**Console Log X-Ray** is a VS Code extension that helps developers quickly find and remove `console.log` statements before deploying their code. It highlights all `console.log` occurrences in red, making them easy to spot.  
+**Console Log X-Ray** is a VS Code extension that helps developers quickly find and remove `console.log` statements before deploying their code. It highlights all `console.log` occurrences in red, making them easy to spot.
+
+<img width="2140" alt="Xnapper-2025-02-07-00 56 27" src="https://github.com/user-attachments/assets/055a5510-624a-4a47-b28c-85bd1adfb98a" />
+
 
 ## Features  
 - Highlights all `console.log` statements in red.  
