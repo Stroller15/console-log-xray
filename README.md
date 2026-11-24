@@ -1,49 +1,100 @@
+<div align="center">
+
+<img src="images/logo.png" width="96" height="96" alt="Console Log X-Ray logo" />
+
 # Console Log X-Ray
 
-**Console Log X-Ray** is a VS Code extension that helps developers quickly find and remove `console.log` statements before deploying their code. It highlights all `console.log` occurrences in red, making them easy to spot.
+**See every `console.log` in a file before it ships.**
 
-<img width="2140" alt="Xnapper-2025-02-07-00 56 27" src="https://github.com/user-attachments/assets/055a5510-624a-4a47-b28c-85bd1adfb98a" />
+[Install from the Marketplace](https://marketplace.visualstudio.com/items?itemName=consolelogxray.console-log-xray) · [Usage](#usage) · [Develop locally](#develop-locally)
+
+[![VS Marketplace version](https://img.shields.io/visual-studio-marketplace/v/consolelogxray.console-log-xray?label=marketplace&color=007acc)](https://marketplace.visualstudio.com/items?itemName=consolelogxray.console-log-xray)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/consolelogxray.console-log-xray?color=007acc)](https://marketplace.visualstudio.com/items?itemName=consolelogxray.console-log-xray)
+![VS Code](https://img.shields.io/badge/VS%20Code-%5E1.96-007acc?logo=visualstudiocode)
+
+</div>
+
+<img width="2140" alt="console.log calls highlighted in red in the VS Code editor" src="https://github.com/user-attachments/assets/055a5510-624a-4a47-b28c-85bd1adfb98a" />
+
+## Why
+
+Stray `console.log` calls are easy to miss in a long file and easy to ship by accident. Console Log X-Ray marks every one of them in red, in the editor and in the scrollbar, so you can find and remove them in seconds.
 
 ## Features
 
-- Highlights all `console.log` statements in red.
-- Works in JavaScript and TypeScript files.
-- Helps maintain clean production-ready code.
-- Lightweight and efficient.
-
-## Installation
-
-1. Open **VS Code**.
-2. Go to the **Extensions Marketplace** (`Ctrl+Shift+X` or `Cmd+Shift+X` on Mac).
-3. Search for **Console Log X-Ray** or click [here](https://marketplace.visualstudio.com/items?itemName=consolelogxray.console-log-xray) to go directly to the extension.
-4. Click **Install**.
-5. Reload VS Code if necessary.
-
-### ⚠️ First-time Installation Warning
-
-Since this is the first time publishing this extension, you may see a **"Do you trust this publisher?"** pop-up when installing. Simply click **"Trust"** to proceed with the installation.
+- **One shortcut to toggle.** Press <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd> on macOS or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd> on Windows and Linux.
+- **Hard to miss.** Each call gets a red background and border, plus a hover message.
+- **Scrollbar markers.** Red marks in the overview ruler show where every log is, even off screen.
+- **Live updates.** While highlighting is on, it refreshes as you type, so new logs light up and deleted ones disappear.
+- **Spacing-tolerant.** Matches `console.log(...)` as well as `console . log (...)`.
+- **Tiny and dependency-free.** No runtime dependencies and no configuration.
 
 ## Usage
 
-1. Open any JavaScript or TypeScript file.
-2. All `console.log` statements will be highlighted in red automatically.
-3. Review and remove unnecessary `console.log` statements before deployment.
+1. Open a file.
+2. Press <kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd>, or run **Console Log Xray: Find Console.log Statements** from the Command Palette.
+3. Every `console.log` is highlighted and a notification says *Console.log scanning enabled*.
+4. Remove what you don't need. Press the shortcut again to turn highlighting off.
 
-### Disabling the Extension Effect
+| Command | macOS | Windows / Linux |
+| --- | --- | --- |
+| `Console Log Xray: Find Console.log Statements` (toggle) | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd> |
 
-If you want to temporarily disable the **Console Log X-Ray** effect without uninstalling the extension, simply reload the VS Code window:
+> [!NOTE]
+> <kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd> is also VS Code's built-in **Select All Occurrences** shortcut, and the extension takes it over. To use a different key, open **Keyboard Shortcuts** (<kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+<kbd>K</kbd> <kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+<kbd>S</kbd>), search for `console-log-xray.scan`, and set your own.
 
-1. Open **Command Palette** (`Ctrl+Shift+P` or `Cmd+Shift+P` on Mac).
-2. Type **"Reload Window"** and select it.
-3. The extension’s highlighting effect will be removed until again enable it.
+### Known limitations
 
-This allows you to quickly toggle the effect without modifying any settings.
+- Switching files doesn't trigger a scan. The new file is highlighted as soon as you edit it, or you can toggle off and on again.
+- Only `console.log` is matched, not `console.warn`, `console.error` and so on.
+- The match ends at the first `)`, so a call like `console.log(fn(x), y)` is only partly highlighted.
 
-## Configuration
+## Installation
 
-No additional configuration is required. The extension works out of the box.
+1. Open the Extensions view in VS Code (<kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>).
+2. Search for **Console Log X-Ray**, or open the [Marketplace page](https://marketplace.visualstudio.com/items?itemName=consolelogxray.console-log-xray).
+3. Click **Install**.
+
+Or from a terminal:
+
+```bash
+code --install-extension consolelogxray.console-log-xray
+```
+
+## How it works
+
+The extension is two small files:
+
+- [`src/extension.ts`](src/extension.ts) registers the toggle command and, while highlighting is on, listens for document changes to re-scan the active editor.
+- [`src/highlighter.ts`](src/highlighter.ts) runs the regex `/console\s*\.\s*log\s*\([^)]*\)/g` over the document text and applies a single `TextEditorDecorationType` (red background, red border, red overview-ruler mark) to every match.
+
+## Develop locally
+
+You need Node.js 20+ and VS Code 1.96 or newer.
+
+```bash
+git clone https://github.com/Stroller15/console-log-xray.git
+cd console-log-xray
+npm install
+npm run watch
+```
+
+Press <kbd>F5</kbd> in VS Code to open an **Extension Development Host** window with the extension loaded. Reload that window (<kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+<kbd>R</kbd>) to pick up changes.
+
+| Command | What it does |
+| --- | --- |
+| `npm run compile` | Bundle with webpack into `dist/` |
+| `npm run watch` | Rebuild on every change |
+| `npm run package` | Production bundle, used before publishing |
+| `npm run lint` | ESLint over `src/` |
+| `npm test` | Compile, lint and run the tests in VS Code |
+
+To build a `.vsix` you can install by hand:
+
+```bash
+npx @vscode/vsce package
+```
 
 ## Contributing
 
-If you’d like to contribute or report an issue, feel free to open an issue or submit a pull request in the repository.
-
+Bug reports and pull requests are welcome. Good first contributions would be scanning every visible editor, re-scanning when you switch files, and a setting for which `console` methods to highlight.
